@@ -23,24 +23,34 @@ class PlacesListScreen extends StatelessWidget {
               icon: const Icon(Icons.add))
         ],
       ),
-      body: Consumer<GreatPlaces>(
-        builder: (context, greatPlaces, ch) => greatPlaces.items.isEmpty
-            ? ch!
-            : ListView.builder(
-                itemBuilder: (ctx, i) {
-                  return ListTile(
-                    leading: CircleAvatar(
-                      backgroundImage: FileImage(greatPlaces.items[i].image),
-                    ),
-                    title: Text(greatPlaces.items[i].title),
-                    onTap: () {},
-                  );
-                },
-                itemCount: greatPlaces.items.length,
-              ),
-        child: const Center(
-          child: Text('Got no places yet, start adding some!'),
-        ),
+      body: FutureBuilder(
+        future: Provider.of<GreatPlaces>(context, listen: false)
+            .fetchAndSetPlaces(),
+        builder: (context, snapshot) {
+          return snapshot.connectionState == ConnectionState.waiting
+              ? const Center(child: CircularProgressIndicator())
+              : Consumer<GreatPlaces>(
+                  builder: (context, greatPlaces, ch) =>
+                      greatPlaces.items.isEmpty
+                          ? ch!
+                          : ListView.builder(
+                              itemBuilder: (ctx, i) {
+                                return ListTile(
+                                  leading: CircleAvatar(
+                                    backgroundImage:
+                                        FileImage(greatPlaces.items[i].image),
+                                  ),
+                                  title: Text(greatPlaces.items[i].title),
+                                  onTap: () {},
+                                );
+                              },
+                              itemCount: greatPlaces.items.length,
+                            ),
+                  child: const Center(
+                    child: Text('Got no places yet, start adding some!'),
+                  ),
+                );
+        },
       ),
     );
   }
