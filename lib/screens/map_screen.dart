@@ -5,10 +5,12 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
 class MapScreen extends StatefulWidget {
+  final bool isDetailScreen;
   final PlaceLocation initialLoaction;
   final bool isSelecting;
   const MapScreen(
-      {this.initialLoaction =
+      {this.isDetailScreen = false,
+      this.initialLoaction =
           const PlaceLocation(latitude: 21.7679, longitude: 78.8718),
       this.isSelecting = false,
       super.key});
@@ -56,7 +58,7 @@ class _MapScreenState extends State<MapScreen> {
           onTap: widget.isSelecting ? _selectLocation : null,
           initialCenter: LatLng(widget.initialLoaction.latitude,
               widget.initialLoaction.longitude),
-          initialZoom: 4,
+          initialZoom: widget.isDetailScreen ? 15 : 4,
         ),
         children: [
           TileLayer(
@@ -64,11 +66,13 @@ class _MapScreenState extends State<MapScreen> {
             userAgentPackageName: 'com.example.app',
           ),
           MarkerLayer(
-            markers: _pickedLocation == null
+            markers: (_pickedLocation == null && widget.isSelecting)
                 ? <Marker>[]
                 : [
                     Marker(
-                      point: _pickedLocation!,
+                      point: _pickedLocation ??
+                          LatLng(widget.initialLoaction.latitude,
+                              widget.initialLoaction.longitude),
                       child: const Icon(
                         Icons.location_pin,
                         color: Colors.red,
