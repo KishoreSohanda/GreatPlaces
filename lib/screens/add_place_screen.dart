@@ -60,7 +60,7 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
               child: Column(
                 children: [
                   TextField(
-                    decoration: const InputDecoration(labelText: 'title'),
+                    decoration: const InputDecoration(labelText: 'Title'),
                     controller: _titleController,
                   ),
                   const SizedBox(
